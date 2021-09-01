@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private final static String JD_URL = "https://m.jd.com/";
     private MyAdapter adapter;
     private RecyclerView recyclerView;
+    private long oldTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,12 +105,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 //        WebView.setWebContentsDebuggingEnabled(BuilD);
         webBridgeWebView.setWebViewClient(new MyWebViewClient(webBridgeProgressBar, (cookie, pt_key) -> runOnUiThread(() -> {
-            adapter.addData(pt_key);
-            recyclerView.scrollToPosition(adapter.getData().size() - 1);
-        })));
-        webBridgeWebView.setWebChromeClient(new MyWebChromeClient(webBridgeProgressBar));
-    }
 
+            //限制 500 毫秒 刷新一次
+            long time = System.currentTimeMillis();
+            if (time - oldTime > 500) {
+                adapter.addData(pt_key);
+                recyclerView.scrollToPosition(adapter.getData().size() - 1);
+                oldTime = time;
+            }
+        })));
+        webBridgeWebView.setWebChromeClient(new
+
+                MyWebChromeClient(webBridgeProgressBar));
+    }
 
     public static class MyWebViewClient extends WebViewClient {
 
