@@ -170,17 +170,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             try {
                 CookieManager cookieManager = CookieManager.getInstance();
                 String cookie = cookieManager.getCookie(request1.getUrl().toString());
-                if (!TextUtils.isEmpty(cookie)) {
-                    if (cookie.contains("pt_key")) {
-                        int startIndex = cookie.indexOf("pt_key");
-                        if (cookieListener != null) {
-                            String pt_key = cookie.substring(startIndex);
-                            pt_key = pt_key.substring(0, pt_key.indexOf(";") + 1);
-                            cookieListener.onCookie(cookie, pt_key);
-                        }
-                    }
-                }
+                if (cookieListener != null && !TextUtils.isEmpty(cookie) && cookie.contains("pt_key")) {
 
+                    int ptKeyIndex = cookie.indexOf("pt_key");
+                    //截取 pt_key 之后的字符串
+                    String pt_key = cookie.substring(ptKeyIndex);
+
+                    int ptPinIndex = pt_key.indexOf("pt_pin");
+                    String pt_pin = pt_key.substring(ptPinIndex);
+                    pt_pin = pt_pin.substring(0, pt_pin.indexOf(";", 1) + 1);
+
+                    //截取到"；"前的 pt_key
+                    pt_key = pt_key.substring(0, pt_key.indexOf(";", 1) + 1);
+
+
+                    cookieListener.onCookie(cookie, pt_key + pt_pin);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
