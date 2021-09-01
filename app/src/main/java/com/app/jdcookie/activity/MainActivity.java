@@ -1,6 +1,5 @@
-package com.app.jdcookie;
+package com.app.jdcookie.activity;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -9,15 +8,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.webkit.CookieManager;
-import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -27,25 +24,9 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.listener.OnItemClickListener;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import okhttp3.Cookie;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import com.app.jdcookie.CookieListener;
+import com.app.jdcookie.MyAdapter;
+import com.app.jdcookie.R;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -71,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         findViewById(R.id.main_back).setOnClickListener(this);
         findViewById(R.id.main_clear).setOnClickListener(this);
+        findViewById(R.id.main_set).setOnClickListener(this);
         webBridgeProgressBar = findViewById(R.id.main_progress_bar);
 
         recyclerView = findViewById(R.id.main_recycler_view);
@@ -105,15 +87,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         webSetting.setUseWideViewPort(true);
 
         webSetting.setBlockNetworkImage(false);
-//        webSetting.setUserAgentString(userAgent);
-//        if (NetWorkUtils.isNetConnected(App.getAppContext())) {
         //缓存模式
         webSetting.setCacheMode(WebSettings.LOAD_NO_CACHE);
-//        } else {
-//            //缓存模式
-//            webSetting.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-//        }
-
         webSetting.setDatabaseEnabled(true);
         webSetting.setDomStorageEnabled(true);
         webSetting.setAppCacheMaxSize(1024 * 1024 * 8);
@@ -183,7 +158,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     //截取到"；"前的 pt_key
                     pt_key = pt_key.substring(0, pt_key.indexOf(";", 1) + 1);
 
-
                     cookieListener.onCookie(cookie, pt_key + pt_pin);
                 }
             } catch (Exception e) {
@@ -205,8 +179,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void onProgressChanged(WebView view, int newProgress) {
             if (null != webBridgeProgressBar) {
                 webBridgeProgressBar.setProgress(newProgress);
-                if (newProgress == 100) {
-                }
             }
             super.onProgressChanged(view, newProgress);
         }
@@ -214,29 +186,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void onReceivedTitle(WebView view, String title) {
             super.onReceivedTitle(view, title);
-            if (!view.getTitle().startsWith("http")) {
-//                if (webBridgeNormalTitleBar != null) {
-//                    webBridgeNormalTitleBar.setTitleText(view.getTitle());
-//                }
-            }
         }
 
     }
 
     @Override
+    public void onBackPressed() {
+        //返回上一页面
+        if (webBridgeWebView.canGoBack()) {
+            webBridgeWebView.goBack();
+        } else {
+            onBackPressed();
+        }
+    }
+
+    @Override
     public void onClick(View v) {
         if (v.getId() == R.id.main_back) {
-            //返回上一页面
-            if (webBridgeWebView.canGoBack()) {
-                webBridgeWebView.goBack();
-            } else {
-                onBackPressed();
-            }
+            onBackPressed();
         } else if (v.getId() == R.id.main_clear) {
             if (adapter != null) {
                 adapter.getData().clear();
                 adapter.notifyDataSetChanged();
             }
+        } else if (v.getId() == R.id.main_set) {
+            startActivity(new Intent(this, SetActivity.class));
         }
     }
 }
