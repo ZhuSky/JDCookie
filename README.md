@@ -1,2 +1,2 @@
 # JDCookie
-学习获取cookie，京东获取cookie
+京东获取cookie，仅供学习参考
