@@ -1,5 +1,10 @@
 package com.app.jdcookie.activity;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -36,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private MyAdapter adapter;
     private RecyclerView recyclerView;
     private long oldTime = 0;
+    private ActivityResultLauncher<Intent> setLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +53,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initWebView();
 
         initData();
+
+        setLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            int resultCode = result.getResultCode();
+            if (resultCode == 10) {
+                webBridgeWebView.loadUrl(JD_URL);
+                findViewById(R.id.main_clear).performClick();
+            }
+        });
     }
 
     private void initView() {
@@ -218,7 +232,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 adapter.notifyDataSetChanged();
             }
         } else if (v.getId() == R.id.main_set) {
-            startActivity(new Intent(this, SetActivity.class));
+            setLauncher.launch(new Intent(this, SetActivity.class));
         }
     }
 }

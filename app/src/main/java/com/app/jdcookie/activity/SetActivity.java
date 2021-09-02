@@ -12,6 +12,8 @@ import com.app.jdcookie.R;
 
 public class SetActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private boolean isClearCookie = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,8 +32,21 @@ public class SetActivity extends AppCompatActivity implements View.OnClickListen
         } else if (v.getId() == R.id.set_clear_cookie_layout) {
             //清除浏览器的cookie
             CookieManager instance = CookieManager.getInstance();
-            instance.removeAllCookies(value -> Toast.makeText(SetActivity.this, "清除" + (value ? "成功" : "失败"), Toast.LENGTH_SHORT).show());
+            instance.removeAllCookies(value -> {
+                this.isClearCookie = value;
+                Toast.makeText(SetActivity.this, "清除" + (value ? "成功" : "失败"), Toast.LENGTH_SHORT).show();
+            });
             instance.flush();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isClearCookie){
+            //清楚cookie需要通知刷新
+            setResult(10);
+            finish();
+        }
+        super.onBackPressed();
     }
 }
