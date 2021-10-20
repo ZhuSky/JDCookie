@@ -27,13 +27,20 @@
             android:layout_weight="1" />
 
         <ImageView
+            android:id="@+id/main_refresh"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:padding="12dp"
+            android:src="@drawable/icon_refresh"
+            app:tint="#fff" />
+
+        <ImageView
             android:id="@+id/main_set"
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:layout_alignParentEnd="true"
-            app:tint="#fff"
             android:padding="12dp"
-            android:src="@drawable/icon_set" />
+            android:src="@drawable/icon_set"
+            app:tint="#fff" />
     </LinearLayout>
 
 

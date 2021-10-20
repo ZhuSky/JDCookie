@@ -1,10 +1,8 @@
 package com.app.jdcookie.activity;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -32,6 +30,8 @@ import android.widget.Toast;
 import com.app.jdcookie.CookieListener;
 import com.app.jdcookie.MyAdapter;
 import com.app.jdcookie.R;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.main_back).setOnClickListener(this);
         findViewById(R.id.main_clear).setOnClickListener(this);
         findViewById(R.id.main_set).setOnClickListener(this);
+        findViewById(R.id.main_refresh).setOnClickListener(this);
         webBridgeProgressBar = findViewById(R.id.main_progress_bar);
 
         recyclerView = findViewById(R.id.main_recycler_view);
@@ -81,6 +82,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             // 将ClipData内容放到系统剪贴板里。
             cm.setPrimaryClip(mClipData);
             Toast.makeText(MainActivity.this, "复制成功", Toast.LENGTH_SHORT).show();
+        });
+        adapter.addChildClickViewIds(R.id.item_main_share);
+        adapter.setOnItemChildClickListener(new OnItemChildClickListener() {
+            @Override
+            public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
+                if (view.getId() == R.id.item_main_share) {
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    // 比如发送文本形式的数据内容
+                    // 指定发送的内容
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, adapter.getItem(position).toString());
+                    // 指定发送内容的类型
+                    sendIntent.setType("text/plain");
+                    startActivity(Intent.createChooser(sendIntent, "分享京东cookie到..."));
+                }
+            }
         });
 
         adapter.setEmptyView(R.layout.empty_layout);
@@ -128,9 +145,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 oldTime = time;
             }
         })));
-        webBridgeWebView.setWebChromeClient(new
-
-                MyWebChromeClient(webBridgeProgressBar));
+        webBridgeWebView.setWebChromeClient(new MyWebChromeClient(webBridgeProgressBar));
     }
 
     public static class MyWebViewClient extends WebViewClient {
@@ -233,6 +248,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         } else if (v.getId() == R.id.main_set) {
             setLauncher.launch(new Intent(this, SetActivity.class));
+        } else if (v.getId() == R.id.main_refresh) {
+            //刷新
+            webBridgeWebView.reload();
         }
     }
 }
