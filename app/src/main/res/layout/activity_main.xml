@@ -49,6 +49,7 @@
         style="@style/JD.ProgressBar.Horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="1px"
         android:max="100"
         android:progress="20"
         android:progressDrawable="@drawable/drawable_webview_progress"
@@ -59,12 +60,12 @@
         android:id="@+id/main_web_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1.5" />
+        android:layout_weight="2" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:background="#e5e5e5"
+        android:background="@color/purple_500"
         android:orientation="horizontal">
 
         <TextView
@@ -73,7 +74,7 @@
             android:layout_centerInParent="true"
             android:gravity="center"
             android:text="京东pt_key列表，点击复制"
-            android:textColor="@color/purple_200"
+            android:textColor="@color/white"
             android:textSize="14sp"
             android:textStyle="bold" />
 
@@ -83,7 +84,8 @@
             android:layout_height="45dp"
             android:layout_alignParentEnd="true"
             android:padding="12dp"
-            android:src="@drawable/icon_clear" />
+            android:src="@drawable/icon_clear"
+            android:tint="@color/white" />
     </RelativeLayout>
 
 

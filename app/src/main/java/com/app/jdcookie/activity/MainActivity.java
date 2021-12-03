@@ -16,6 +16,7 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.ArraySet;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.WebChromeClient;
@@ -32,6 +33,8 @@ import com.app.jdcookie.MyAdapter;
 import com.app.jdcookie.R;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
+
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -134,12 +137,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             webSetting.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
 
+
 //        WebView.setWebContentsDebuggingEnabled(BuilD);
         webBridgeWebView.setWebViewClient(new MyWebViewClient(webBridgeProgressBar, (cookie, pt_key) -> runOnUiThread(() -> {
 
             //限制 500 毫秒 刷新一次
             long time = System.currentTimeMillis();
-            if (time - oldTime > 500) {
+            if (time - oldTime > 500 && !adapter.getData().contains(pt_key)) {
+
                 adapter.addData(pt_key);
                 recyclerView.scrollToPosition(adapter.getData().size() - 1);
                 oldTime = time;

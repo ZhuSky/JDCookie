@@ -13,12 +13,11 @@
 
         <TextView
             android:id="@+id/item_main_text"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:paddingStart="12dp"
+            android:layout_marginStart="15dp"
             android:paddingTop="15dp"
-            android:paddingEnd="12dp"
             android:paddingBottom="15dp"
             android:text="这里是cookie"
             android:textColor="#333"
@@ -37,8 +36,8 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="2px"
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="12dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
         android:background="#e3e3e3" />
 
 </LinearLayout>
